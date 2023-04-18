@@ -1,0 +1,84 @@
+var startButton = 0;
+var currentScene = 0;
+var score = 0;
+var lives = 0;
+
+background(0, 0, 0);
+
+var playGame = function() {
+    background(0, 0, 0);
+
+};
+
+var Button = function(config) {
+    this.x = config.x || 0;
+    this.y = config.y || 0;
+    this.width = config.width || 105;
+    this.height = config.height || 50;
+    this.label = config.label || "Click";
+    this.onClick = config.onClick || function() {};
+};
+
+Button.prototype.draw = function() {
+    fill(237, 224, 45);
+    rect(this.x, this.y, this.width, this.height, 20);
+    fill(247, 33, 0);
+    textSize(30);
+    textAlign(LEFT, TOP);
+    text(this.label, this.x+23, this.y+this.height/4);
+};
+
+Button.prototype.isMouseInside = function() {
+    return mouseX > this.x &&
+           mouseX < (this.x + this.width) &&
+           mouseY > this.y &&
+           mouseY < (this.y + this.height);
+};
+
+Button.prototype.handleMouseClick = function() {
+    if (this.isMouseInside()) {
+        this.onClick();
+    }
+};
+// end Khan button class
+
+var startButton = new Button({ //creates start button used in intro screen
+    x: 127,
+    y: 299,
+    label: "PLAY",
+    onClick: function() {
+        currentScene=1;
+    }
+});
+
+mouseClicked = function() {
+    
+   startButton.handleMouseClick();
+    
+};
+
+var splashScreen = function() {  //The start screen!
+    background(0, 0, 0);
+    fill(240, 234, 56);
+    textSize(40);
+    text("SPACE INVADERS", 70, 30);
+    textSize(15);
+    fill(106, 255, 0);
+    text("HOW TO PLAY: Use the space bar to shoot the aliens", 45, 80); 
+    text("as they fall. You have 3 lives! Use the left and right", 45, 100); 
+    text("arrow keys to control the spaceship. Good luck!", 45, 119);
+    startButton.draw();
+};
+
+var f = createFont("fantasy");    //font for the game
+textFont(f);
+
+draw = function() {
+    if (currentScene === 0) {
+        splashScreen();
+    }
+    
+    if (currentScene === 1) { 
+        playGame();
+    }
+};
