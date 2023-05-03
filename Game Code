@@ -1,0 +1,342 @@
+//There are elements of this program that were added by a Khan user (1001Programmer1001) that randomly stumbled upon this project and solved our bullet shooting problem. Comments will specify which aspects that user added.
+
+
+var startButton = 0;
+var currentScene = 0;
+var Y=300; //temp use in keyTyped fxn
+imageMode(CENTER);
+var NUM_COLS = 5;
+var NUM_ROWS = 10;
+var speed = 0.05; //speed at which aliens are moving down screen
+
+var score = 0;
+var lives = 0;
+var keys = [];
+background(0, 0, 0);
+
+var drawSpaceship = function(spaceX, spaceY, spaceSize) {
+var spaceHeight = spaceSize/30;
+    
+noStroke();
+fill(0, 255, 72);
+rect(spaceX+52*spaceHeight, spaceY+265*spaceHeight, 290*spaceHeight, 30*spaceHeight);
+rect(spaceX+52*spaceHeight, spaceY+235*spaceHeight, 290*spaceHeight, 30*spaceHeight);
+rect(spaceX+84*spaceHeight, spaceY+205*spaceHeight, 225*spaceHeight, 30*spaceHeight);
+rect(spaceX+155*spaceHeight, spaceY+175*spaceHeight, 85*spaceHeight, 30*spaceHeight);
+rect(spaceX+155*spaceHeight, spaceY+145*spaceHeight, 85*spaceHeight, 30*spaceHeight);
+rect(spaceX+182*spaceHeight, spaceY+117*spaceHeight, 30*spaceHeight, 30*spaceHeight);
+
+};
+
+
+var drawSquidAlien = function(alienX, alienY, alienSize) {
+var alienHeight = alienSize/30;
+
+noStroke();
+fill(115, 0, 255);
+rect(alienX+160*alienHeight, alienY+30*alienHeight, 60*alienHeight, 30*alienHeight); //head
+rect(alienX+130*alienHeight, alienY+60*alienHeight, 120*alienHeight, 30*alienHeight);
+rect(alienX+99*alienHeight, alienY+90*alienHeight, 180*alienHeight, 30*alienHeight);
+rect(alienX+65*alienHeight, alienY+120*alienHeight, 60*alienHeight, 30*alienHeight); //eyes
+rect(alienX+250*alienHeight, alienY+120*alienHeight, 60*alienHeight, 30*alienHeight);
+rect(alienX+158*alienHeight, alienY+120*alienHeight, 60*alienHeight, 30*alienHeight);
+rect(alienX+65*alienHeight, alienY+150*alienHeight, 245*alienHeight, 30*alienHeight);
+rect(alienX+158*alienHeight, alienY+180*alienHeight, 60*alienHeight, 30*alienHeight); //feet
+rect(alienX+249*alienHeight, alienY+180*alienHeight, 32*alienHeight, 30*alienHeight);
+rect(alienX+93*alienHeight, alienY+180*alienHeight, 32*alienHeight, 30*alienHeight);
+rect(alienX+60*alienHeight, alienY+210*alienHeight, 32*alienHeight, 30*alienHeight);
+rect(alienX+281*alienHeight, alienY+210*alienHeight, 32*alienHeight, 30*alienHeight);
+rect(alienX+249*alienHeight, alienY+240*alienHeight, 32*alienHeight, 30*alienHeight);
+rect(alienX+92*alienHeight, alienY+240*alienHeight, 32*alienHeight, 30*alienHeight);
+
+};
+
+var drawBlueAlien = function(alienX, alienY, alienSize) {
+var alienHeight = alienSize/30;
+
+noStroke();
+fill(0, 191, 255);
+rect(alienX+118*alienHeight, alienY+40*alienHeight, 110*alienHeight, 30*alienHeight); //head
+rect(alienX+55*alienHeight, alienY+70*alienHeight, 235*alienHeight, 30*alienHeight);
+rect(alienX+30*alienHeight, alienY+100*alienHeight, 285*alienHeight, 30*alienHeight);
+rect(alienX+30*alienHeight, alienY+130*alienHeight, 65*alienHeight, 30*alienHeight); //eyes
+rect(alienX+250*alienHeight, alienY+130*alienHeight, 65*alienHeight, 30*alienHeight);
+rect(alienX+146*alienHeight, alienY+130*alienHeight, 50*alienHeight, 30*alienHeight);
+rect(alienX+30*alienHeight, alienY+160*alienHeight, 285*alienHeight, 30*alienHeight);
+rect(alienX+94*alienHeight, alienY+190*alienHeight, 50*alienHeight, 30*alienHeight); //feet
+rect(alienX+194*alienHeight, alienY+190*alienHeight, 50*alienHeight, 30*alienHeight);
+rect(alienX+68*alienHeight, alienY+220*alienHeight, 50*alienHeight, 30*alienHeight);
+rect(alienX+222*alienHeight, alienY+220*alienHeight, 50*alienHeight, 30*alienHeight);
+rect(alienX+144*alienHeight, alienY+220*alienHeight, 50*alienHeight, 30*alienHeight);
+rect(alienX+18*alienHeight, alienY+249*alienHeight, 50*alienHeight, 30*alienHeight);
+rect(alienX+271*alienHeight, alienY+249*alienHeight, 50*alienHeight, 30*alienHeight);
+
+};
+
+var drawRedAlien = function(alienX, alienY, alienSize) {
+    var alienHeight = alienSize/60;
+noStroke();
+fill(255, 0, 0);
+rect(alienX+75 * alienHeight, alienY+50 * alienHeight, 30 * alienHeight, 30 * alienHeight); //antennae
+rect(alienX+258 * alienHeight, alienY+50 * alienHeight, 30 * alienHeight, 30 * alienHeight); 
+rect(alienX+228 * alienHeight, alienY+80 * alienHeight , 30 * alienHeight, 30 * alienHeight);
+rect(alienX+105 * alienHeight, alienY+80 * alienHeight, 30 * alienHeight, 30 * alienHeight);
+rect(alienX+75 * alienHeight, alienY+110 * alienHeight, 214 * alienHeight, 30 * alienHeight); //start head
+rect(alienX+135 * alienHeight, alienY+140 * alienHeight, 94 * alienHeight, 30 * alienHeight);
+rect(alienX+7 * alienHeight, alienY+140 * alienHeight, 97 * alienHeight, 30 * alienHeight);
+rect(alienX+258 * alienHeight, alienY+140 * alienHeight, 97 * alienHeight, 30 * alienHeight);
+rect(alienX+7 * alienHeight, alienY+170 * alienHeight, 348 * alienHeight, 30 * alienHeight);
+rect(alienX+7 * alienHeight, alienY+80 * alienHeight, 30 * alienHeight, 60 * alienHeight); //arm 1
+rect(alienX+325 * alienHeight, alienY+80 * alienHeight, 30 * alienHeight, 60 * alienHeight); //arm 2
+rect(alienX+35 * alienHeight, alienY+200 * alienHeight, 290 * alienHeight, 30 * alienHeight);
+rect(alienX+75 * alienHeight, alienY+230 * alienHeight, 30 * alienHeight, 30 * alienHeight); //foot 1
+rect(alienX+45 * alienHeight, alienY+260 * alienHeight, 30 * alienHeight, 30 * alienHeight); 
+rect(alienX+260 * alienHeight, alienY+230 * alienHeight, 30 * alienHeight, 30 * alienHeight); //foot 2
+rect(alienX+290 * alienHeight, alienY+260 *alienHeight, 30 * alienHeight, 30 * alienHeight); 
+
+};
+
+
+//begin invader class
+var Squid = function(x, y) {
+    this.x = x;
+    this.y = y;
+    this.size = 2;
+};
+Squid.prototype.draw = function() {
+    drawSquidAlien(this.x, this.y, this.size, this.size);
+};
+
+var BlueAlien = function(x,y) {
+    this.x = x;
+    this.y = y;
+    this.size = 2;
+};
+BlueAlien.prototype.draw = function() {
+     drawBlueAlien(this.x, this.y, this.size, this.size);
+};
+
+var RedAlien=function(x,y){
+    this.x = x;
+    this.y = y;
+    this.size = 4;
+};
+RedAlien.prototype.draw = function() {
+    drawRedAlien(this.x, this.y, this.size, this.size);
+};
+//end invader class
+
+
+
+
+
+
+
+
+var SpaceShip = function(x,y){
+    this.x = x;
+    this.y = y;
+};
+SpaceShip.prototype.draw = function() {
+     this.x = constrain (this.x, 20, 370);
+     drawSpaceship(this.x-30, this.y, 5);
+};
+SpaceShip.prototype.right = function(){ //spaceship moves right
+    this.x += 3;
+};
+SpaceShip.prototype.left = function(){ //spaceship moves left
+    this.x -= 3;
+};
+SpaceShip.prototype.shoot = function(){
+        fill(255, 255, 255);
+        line(this.x, this.y, this.x, this.y-10);  
+};
+var spaceship = new SpaceShip(100,350);
+
+var bulletsArray = [];
+
+var Bullets = function (){ //NEW ADDITIONS-MIMICKING BUTTON CLASS
+    this.x = spaceship.x;
+    this.y = spaceship.y;
+    this.dead = false;
+    this.speed = 5;
+};
+Bullets.prototype.draw = function() {
+    fill (255, 255, 255);
+    rect (this.x, this.y, 5, 20);
+};
+Bullets.prototype.update = function() {
+    this.y += -this.speed;
+    if (this.y < -20) {           //Curtesy of 1001Programmer1001
+        this.dead = true;
+    }
+};
+Bullets.prototype.run = function() {    //Curtesy of 1001Programmer1001
+    this.update();
+    this.draw();
+};
+var aliens = [];
+
+for (var i = 0; i<NUM_ROWS; i++){  //draws alien grid
+    for (var j = 0; j <1; j++) { //makes one row of squid
+        var tileX = i*37+25;
+        var tileY = j*31+25;
+        aliens.push(new Squid(tileX,tileY));
+    }
+    for (var j=1; j<3; j++){ //makes two rows of red aliens
+        var tileX= i*37+25;
+        var tileY = j*31+25;
+        aliens.push(new RedAlien(tileX,tileY));
+    }
+    for (var j=3; j<5; j++) { //makes two rows of blue aliens
+        var tileX = i*37+25;
+        var tileY = j*31+25;
+        aliens.push(new BlueAlien(tileX,tileY));
+    }
+}
+
+//checkForAliens: need to get this to work when the two objects hit, not just for these hard-coded numbers.
+Bullets.prototype.checkForAliens = function (invader){ 
+    if ((this.x<=400 && this.x>=10) && (this.y<=200)){
+        this.dead = true;
+       // println(1);
+    }
+
+};
+
+
+
+
+//Create Tiles:
+
+
+
+var fireBullet = function() {    
+    bulletsArray.push(new Bullets());
+};
+var runBullets = function() {  //Curtesy of 1001Programmer1001
+    for (var i = bulletsArray.length-1; i >= 0; i--) {
+        bulletsArray[i].run();
+        bulletsArray[i].checkForAliens(aliens[i]); //NEW!!!!!
+
+        if (bulletsArray[i].dead) {   //if bullet goes off screen or hits take out of array
+            bulletsArray.splice(i, 1);
+        }
+    }
+};
+
+
+
+
+
+var Button = function(config) { 
+    this.x = config.x || 0;
+    this.y = config.y || 0;
+    this.width = config.width || 105;
+    this.height = config.height || 50;
+    this.label = config.label || "Click";
+    this.onClick = config.onClick || function() {};
+};
+
+Button.prototype.draw = function() {
+    fill(237, 224, 45);
+    rect(this.x, this.y, this.width, this.height, 20);
+    fill(247, 33, 0);
+    textSize(30);
+    textAlign(LEFT, TOP);
+    text(this.label, this.x+23, this.y+this.height/4);
+};
+
+Button.prototype.isMouseInside = function() {
+    return mouseX > this.x &&
+           mouseX < (this.x + this.width) &&
+           mouseY > this.y &&
+           mouseY < (this.y + this.height);
+};
+
+Button.prototype.handleMouseClick = function() {
+    if (this.isMouseInside()) {
+        this.onClick();
+    }
+};
+// end Khan button class
+
+var startButton = new Button({ //creates start button used in intro screen
+    x: 143,
+    y: 270,
+    label: "PLAY",
+    onClick: function() {
+        if (currentScene === 0) {
+            currentScene=1;
+        }
+    }
+});
+
+
+
+
+var playGame = function() { // all game code here...
+    background(0, 0, 0);
+    for (var i=0; i<aliens.length; i++){ //draw grid of aliens
+        aliens[i].draw();
+    //   bulletsArray[i].checkForAliens(aliens[i]); //NEW!!!!!
+    }
+    
+    for (var i=0; i<aliens.length; i++){ //move grid of aliens down screen
+        aliens[i].y+=speed;
+        }
+        
+    runBullets();
+    spaceship.draw();
+    
+    
+};
+   
+
+
+var splashScreen = function() {  //The start screen!
+    background(0, 0, 0);
+    fill(240, 234, 56);
+    textSize(40);
+    text("SPACE INVADERS", 70, 30);
+    textSize(15);
+    fill(106, 255, 0);
+    text("HOW TO PLAY: Use the space bar to shoot the aliens", 45, 80); 
+    text("as they fall. You have 3 lives! Use the left and right", 45, 100); 
+    text("arrow keys to control the spaceship. Good luck!", 45, 119);
+    drawSquidAlien(45, 170, 7);
+    drawBlueAlien(269, 172, 7);
+    drawRedAlien(160, 177, 12);
+    drawSpaceship(140, 312, 9);
+    startButton.draw();
+};
+
+var f = createFont("fantasy");    //font for the game
+textFont(f);
+var keyCheck = function() {
+    if (keys[RIGHT]){ //when right arrow pressed, ship moves right
+        spaceship.right();
+    } 
+    if (keys[LEFT]){ //when left arrow pressed, ship moves left
+        spaceship.left();   
+    }
+};
+keyPressed = function() {    //Curtesy of 1001Programmer1001
+    keys[keyCode] = true;
+    if (keyCode === 32 && currentScene === 1) {
+        fireBullet();
+    }
+};
+keyReleased = function() {
+    keys[keyCode] = false;
+};
+mouseClicked = function() {
+   startButton.handleMouseClick();
+};
+draw = function() {
+    if (currentScene === 0) {
+        splashScreen();}
+    if (currentScene === 1) {
+        keyCheck();
+        playGame();}
+};
