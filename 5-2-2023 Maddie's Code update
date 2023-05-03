@@ -7,11 +7,12 @@ var Y=300; //temp use in keyTyped fxn
 imageMode(CENTER);
 var NUM_COLS = 5;
 var NUM_ROWS = 10;
-var speed = 0.1; //speed at which aliens are moving down screen
+var speed = 0.05; //speed at which aliens are moving down screen
 
 var score = 0;
 var lives = 0;
 var keys = [];
+var projectiles = [{x: 100, y: 50}];
 background(0, 0, 0);
 
 //Maddie's Bitmoji
@@ -230,6 +231,16 @@ rect(alienX+290 * alienHeight, alienY+260 *alienHeight, 30 * alienHeight, 30 * a
 
 };
 
+var drawBorder = function(borderX, borderY, borderSize) {
+var borderHeight = borderSize/60;
+    
+    noStroke();
+    fill(38, 255, 0);
+    rect(borderX+100*borderHeight, borderY+110*borderHeight, 25*borderHeight, 60*borderHeight);
+    rect(borderX+125*borderHeight, borderY+100*borderHeight, 55*borderHeight, 50*borderHeight);
+    rect(borderX+180*borderHeight, borderY+110*borderHeight, 25*borderHeight, 60*borderHeight);
+};
+
 
 //begin invader class
 var Squid = function(x, y) {
@@ -305,6 +316,24 @@ Bullets.prototype.run = function() {    //Curtesy of 1001Programmer1001
     this.update();
     this.draw();
 };
+
+Bullets.prototype.checkForShipGrab = function(ship) {
+    if (ship.x >= this.x && ship.x <= (this.x + 40) &&
+        ship.y >= this.y && ship.y <= (this.y + 40)) {
+        currentScene = 2;
+       
+       }
+};
+
+var checkForBulletCollision = function(ship, bullet) {
+    
+    if (ship.x >= bullet.x && ship.x <= (bullet.x + 40) &&
+        ship.y >= bullet.y-80 && ship.y <= (bullet.y + 0)) {
+        currentScene = 2;
+       
+       }
+};
+
 var aliens = [];
 
 for (var i = 0; i<NUM_ROWS; i++){  //draws alien grid
@@ -418,9 +447,33 @@ var playGame = function() { // all game code here...
             currentScene=3;
         }
     }
+    
+    // draw all of the example projectiles
+    for ( var i in projectiles ){
+        fill(255, 255, 255);
+        ellipse(projectiles[i].x, projectiles[i].y++, 5, 10);
+    }
+    
+    // Adds a projectile to the screen every 300 frames (aprox 10 secs)
+    if(frameCount % (30 * 10) === 0){
+        
+    var randomAlien = aliens [floor(random(0, aliens.length-1))];
+        
+        // Here the x position of the bullet and this is where it will shoot from a random invader
+        
+        projectiles.push({x: randomAlien.x, y: randomAlien.y});   
+    }
+    
+    for (var i = 0; i < projectiles.length; ++i) {
+        checkForBulletCollision(spaceship, projectiles[i]);
+    }
         
     runBullets();
     spaceship.draw();
+    drawBorder(-26, 250, 30);
+    drawBorder(125, 250, 30);
+    drawBorder(272, 250, 30);
+   
     //println (aliens.length);
 };
    
