@@ -1,0 +1,538 @@
+//There are elements of this program that were added by a Khan user (1001Programmer1001) that randomly stumbled upon this project and solved our bullet shooting problem. Comments will specify which aspects that user added.
+
+
+var startButton = 0;
+var currentScene = 0;
+var Y=300; //temp use in keyTyped fxn
+imageMode(CENTER);
+var NUM_COLS = 5;
+var NUM_ROWS = 10;
+var speed = 0.06; //speed at which aliens are moving down screen
+
+var score = 0;
+var lives = 3;
+var keys = [];
+background(0, 0, 0);
+
+//Maddie's Bitmoji
+var bitX = 0;
+var bitY =0;
+var bitSize = 315;
+var drawMaddieBitmojiHead = function (bitX, bitY, bitSize){
+     //HAIR
+noStroke();
+fill (133, 82, 82);
+
+bezier (bitX+(bitSize/400*154), bitY+(bitSize/400*351), bitX+(bitSize/400*166), bitY+(bitSize/400*182), bitX+(bitSize/400*267), bitY+(bitSize/400*219), bitX+(bitSize/400*259), bitY+(bitSize/400*350)); //hair on right
+bezier (bitX+(bitSize/400*146), bitY+(bitSize/400*352), bitX+(bitSize/400*123), bitY+(bitSize/400*214), bitX+(bitSize/400*206), bitY+(bitSize/400*200), bitX+(bitSize/400*255), bitY+(bitSize/400*346)); //hair on left
+arc (bitX+(bitSize/400*220), bitY+(bitSize/400*275), (bitSize/400*29), (bitSize/400*10), 48, 90);
+
+//FACE
+noStroke();
+fill(239, 214, 189); //skin color
+ellipse (bitX+(bitSize/400*200), bitY+(bitSize/400*300), (bitSize/400*89), (bitSize/400*105)); //head
+rect (bitX+(bitSize/400*186), bitY+(bitSize/400*350), (bitSize/400*27), (bitSize/400*30)); //neck
+
+//HAIR CONT...
+fill (133, 82, 82);//hair color
+arc (bitX+(bitSize/400*228), bitY+(bitSize/400*249), (bitSize/400*74), (bitSize/400*49), 68, 187); //bangs
+
+//hat
+fill (117, 105, 224);
+stroke (16, 0, 242);
+arc (bitX+(bitSize/400*196), bitY+(bitSize/400*258), (bitSize/400*85), (bitSize/400*71), 180, 360);
+strokeWeight (bitSize/400*6);
+line (bitX+(bitSize/400*156), bitY+(bitSize/400*259), bitX+(bitSize/400*268), bitY+(bitSize/400*257));
+
+//GLASSES
+strokeWeight (bitSize/400*1);
+stroke (255, 0, 255); //sunglass rims color
+fill (148, 148, 148); //sunglass lens color
+ellipse (bitX+(bitSize/400*180), bitY+(bitSize/400*295), (bitSize/400*28), (bitSize/400*21)); //left lens
+ellipse (bitX+(bitSize/400*220), bitY+(bitSize/400*295), (bitSize/400*28), (bitSize/400*21)); //right lens
+line (bitX+(bitSize/400*194), bitY+(bitSize/400*295), bitX+(bitSize/400*206), bitY+(bitSize/400*295)); //sunglass nose bridge
+line (bitX+(bitSize/400*234),bitY+(bitSize/400*295),bitX+(bitSize/400*242), bitY+(bitSize/400*286)); // sunglass right ear thingy
+line (bitX+(bitSize/400*166), bitY+(bitSize/400*295), bitX+(bitSize/400*157), bitY+(bitSize/400*286)); //sunglass left ear thingy
+
+//MOUTH
+strokeWeight(bitSize/400*2);
+stroke (212, 89, 89); //lips color
+fill (133, 111, 111); //lips color
+arc(bitX+(bitSize/400*200), bitY+(bitSize/400*326), (bitSize/400*30), (bitSize/400*11), 0, 180); //bottom lip
+stroke (179, 157, 179); //mouth abyss
+arc (bitX+(bitSize/400*200), bitY+(bitSize/400*324), (bitSize/400*30), (bitSize/400*10), 0, 180);
+stroke (212, 89, 89); //lips color
+fill (255, 255, 255);
+arc (bitX+(bitSize/400*200), bitY+(bitSize/400*324), (bitSize/400*30), (bitSize/400*6), 180, 360); //top lip
+
+//NOSE
+stroke (181, 132, 132);
+fill (239, 214, 189);//skin color
+bezier (bitX+(bitSize/400*200), bitY+(bitSize/400*298), bitX+(bitSize/400*216), bitY+(bitSize/400*327), bitX+(bitSize/400*191), bitY+(bitSize/400*303), bitX+(bitSize/400*194), bitY+(bitSize/400*312));
+};
+var drawMaddieBitmojiBody = function (bitX, bitY, bitSize) {
+    noStroke();
+    //SHIRT SITUATION
+fill(201, 201, 201); //shirt color
+ellipse (bitX+(bitSize/400*200), bitY+(bitSize/400*400), (bitSize/400*150), (bitSize/400*50)); //shirt
+fill (239, 214, 189); //skin color
+ellipse (bitX+(bitSize/400*200), bitY+(bitSize/400*374), (bitSize/400*27), (bitSize/400*19));//neck dip in shirt
+
+//SHIRT INITIALS
+fill (255, 0, 187);
+textSize (bitSize/400*18);
+text ("M G S", bitX+(bitSize/400*175), bitY+(bitSize/400*404));  
+};
+var drawMaddieBitmoji = function (bitX, bitY, bitSize) {
+    drawMaddieBitmojiHead(bitX,bitY,bitSize);
+    drawMaddieBitmojiBody(bitX,bitY,bitSize);
+};
+//end Maddie's Bitmoji
+
+//Selena's Bitmoji
+var bitmojiX = 200;
+var bitmojiY = 200;
+var drawBitmojiHead = function(bitmojiX, bitmojiY, bitmojiSize) {
+  var bitmojiHeight = bitmojiSize/477;
+    stroke(0, 0, 0);
+    fill(235, 217, 183); //skin tone
+    ellipse(bitmojiX+217*bitmojiHeight, bitmojiY+160*bitmojiHeight, 89*bitmojiHeight, 115*bitmojiHeight); //head
+    rect(bitmojiX+205*bitmojiHeight,  bitmojiY+216*bitmojiHeight, 23*bitmojiHeight, 20*bitmojiHeight); //neck
+    fill(77, 42, 28);
+    ellipse(bitmojiX+194*bitmojiHeight,  bitmojiY+159*bitmojiHeight, 13*bitmojiHeight, 24*bitmojiHeight); //left eye
+    ellipse(bitmojiX+240*bitmojiHeight,  bitmojiY+159*bitmojiHeight, 13*bitmojiHeight, 24*bitmojiHeight); //right eye
+    fill(79, 31, 31);
+    arc(bitmojiX+185*bitmojiHeight,  bitmojiY+176*bitmojiHeight, 57*bitmojiHeight, 104*bitmojiHeight, 65, 269); //hair strand 1
+    arc(bitmojiX+251*bitmojiHeight,  bitmojiY+176*bitmojiHeight, 57*bitmojiHeight, 104*bitmojiHeight, 270, 477); //hair strand 2
+    noFill();
+    ellipse(bitmojiX+194*bitmojiHeight,  bitmojiY+160*bitmojiHeight, 34*bitmojiHeight, 34*bitmojiHeight); //glasses lens 1
+    ellipse(bitmojiX+241*bitmojiHeight,  bitmojiY+160*bitmojiHeight, 34*bitmojiHeight, 34*bitmojiHeight); //glasses lens 2
+    line(bitmojiX+210*bitmojiHeight,  bitmojiY+159*bitmojiHeight, bitmojiX+223*bitmojiHeight,  bitmojiY+159*bitmojiHeight); //glasses line
+    noFill();
+    arc(bitmojiX+217*bitmojiHeight,  bitmojiY+145*bitmojiHeight, 77*bitmojiHeight, 103*bitmojiHeight, 75, 107); //smile
+    noStroke();
+    fill(79, 31, 31);
+    arc(bitmojiX+188*bitmojiHeight,  bitmojiY+113*bitmojiHeight, 69*bitmojiHeight, 66*bitmojiHeight, 330, 505); //curtain bang 1
+    arc(bitmojiX+248*bitmojiHeight,  bitmojiY+115*bitmojiHeight, 69*bitmojiHeight, 66*bitmojiHeight, 398, 578); //curtain bang 2
+    arc(bitmojiX+217*bitmojiHeight,  bitmojiY+132*bitmojiHeight, 95*bitmojiHeight, 79*bitmojiHeight, -185, 7); //top of head
+    noStroke();
+    fill(245, 191, 191);
+    ellipse(bitmojiX+195*bitmojiHeight,  bitmojiY+188*bitmojiHeight, 11*bitmojiHeight, 10*bitmojiHeight); //cheek 1
+    ellipse(bitmojiX+242*bitmojiHeight,  bitmojiY+188*bitmojiHeight, 11*bitmojiHeight, 10*bitmojiHeight); //cheek 2
+};
+var drawBitmojiBody = function(bitmojiX, bitmojiY, bitmojiSize) {
+  var bitmojiHeight = bitmojiSize/477;
+    fill(118, 143, 207);
+    arc(bitmojiX+218*bitmojiHeight,  bitmojiY+278*bitmojiHeight, 124*bitmojiHeight, 110*bitmojiHeight, -179, -1); //shirt
+    fill(135, 85, 135);
+    rect(bitmojiX+185*bitmojiHeight,  bitmojiY+239*bitmojiHeight, 23*bitmojiHeight, 6*bitmojiHeight); //letter S
+    rect(bitmojiX+185*bitmojiHeight,  bitmojiY+244*bitmojiHeight, 6*bitmojiHeight, 11*bitmojiHeight); //letter S
+    rect(bitmojiX+185*bitmojiHeight,  bitmojiY+251*bitmojiHeight, 23*bitmojiHeight, 6*bitmojiHeight); //letter S
+    rect(bitmojiX+202*bitmojiHeight,  bitmojiY+255*bitmojiHeight, 6*bitmojiHeight, 11*bitmojiHeight); //letter S
+    rect(bitmojiX+185*bitmojiHeight,  bitmojiY+263*bitmojiHeight, 23*bitmojiHeight, 6*bitmojiHeight); //letter S
+    rect(bitmojiX+226*bitmojiHeight,  bitmojiY+239*bitmojiHeight, 23*bitmojiHeight, 6*bitmojiHeight); //letter C
+    rect(bitmojiX+226*bitmojiHeight,  bitmojiY+244*bitmojiHeight, 6*bitmojiHeight, 24*bitmojiHeight); //letter C
+    rect(bitmojiX+226*bitmojiHeight,  bitmojiY+263*bitmojiHeight, 23*bitmojiHeight, 6*bitmojiHeight); //letter C
+    fill(240, 175, 175);
+    ellipse(bitmojiX+245*bitmojiHeight,  bitmojiY+114*bitmojiHeight, 10*bitmojiHeight, 23*bitmojiHeight); //petal 1
+    ellipse(bitmojiX+256*bitmojiHeight,  bitmojiY+123*bitmojiHeight, 23*bitmojiHeight, 10*bitmojiHeight); //petal 2
+    ellipse(bitmojiX+234*bitmojiHeight,  bitmojiY+123*bitmojiHeight, 23*bitmojiHeight, 10*bitmojiHeight); //petal 3
+    ellipse(bitmojiX+245*bitmojiHeight,  bitmojiY+135*bitmojiHeight, 10*bitmojiHeight, 23*bitmojiHeight); //petal 4
+    fill(255, 255, 255);
+    ellipse(bitmojiX+245*bitmojiHeight,  bitmojiY+124*bitmojiHeight, 11*bitmojiHeight, 10*bitmojiHeight); //flower middle
+};
+var myBitmoji = function(bitmojiX, bitmojiY, bitmojiSize) {
+ drawBitmojiHead(bitmojiX, bitmojiY, bitmojiSize);
+ drawBitmojiBody(bitmojiX, bitmojiY, bitmojiSize);
+
+};
+//end Selena's Bitmoji
+
+var drawSpaceship = function(spaceX, spaceY, spaceSize) {
+var spaceHeight = spaceSize/30;
+    
+noStroke();
+fill(0, 255, 72);
+rect(spaceX+52*spaceHeight, spaceY+265*spaceHeight, 290*spaceHeight, 30*spaceHeight);
+rect(spaceX+52*spaceHeight, spaceY+235*spaceHeight, 290*spaceHeight, 30*spaceHeight);
+rect(spaceX+84*spaceHeight, spaceY+205*spaceHeight, 225*spaceHeight, 30*spaceHeight);
+rect(spaceX+155*spaceHeight, spaceY+175*spaceHeight, 85*spaceHeight, 30*spaceHeight);
+rect(spaceX+155*spaceHeight, spaceY+145*spaceHeight, 85*spaceHeight, 30*spaceHeight);
+rect(spaceX+182*spaceHeight, spaceY+117*spaceHeight, 30*spaceHeight, 30*spaceHeight);
+
+};
+
+
+var drawSquidAlien = function(alienX, alienY, alienSize) {
+var alienHeight = alienSize/30;
+
+noStroke();
+fill(115, 0, 255);
+rect(alienX+160*alienHeight, alienY+30*alienHeight, 60*alienHeight, 30*alienHeight); //head
+rect(alienX+130*alienHeight, alienY+60*alienHeight, 120*alienHeight, 30*alienHeight);
+rect(alienX+99*alienHeight, alienY+90*alienHeight, 180*alienHeight, 30*alienHeight);
+rect(alienX+65*alienHeight, alienY+120*alienHeight, 60*alienHeight, 30*alienHeight); //eyes
+rect(alienX+250*alienHeight, alienY+120*alienHeight, 60*alienHeight, 30*alienHeight);
+rect(alienX+158*alienHeight, alienY+120*alienHeight, 60*alienHeight, 30*alienHeight);
+rect(alienX+65*alienHeight, alienY+150*alienHeight, 245*alienHeight, 30*alienHeight);
+rect(alienX+158*alienHeight, alienY+180*alienHeight, 60*alienHeight, 30*alienHeight); //feet
+rect(alienX+249*alienHeight, alienY+180*alienHeight, 32*alienHeight, 30*alienHeight);
+rect(alienX+93*alienHeight, alienY+180*alienHeight, 32*alienHeight, 30*alienHeight);
+rect(alienX+60*alienHeight, alienY+210*alienHeight, 32*alienHeight, 30*alienHeight);
+rect(alienX+281*alienHeight, alienY+210*alienHeight, 32*alienHeight, 30*alienHeight);
+rect(alienX+249*alienHeight, alienY+240*alienHeight, 32*alienHeight, 30*alienHeight);
+rect(alienX+92*alienHeight, alienY+240*alienHeight, 32*alienHeight, 30*alienHeight);
+
+};
+
+var drawBlueAlien = function(alienX, alienY, alienSize) {
+var alienHeight = alienSize/30;
+
+noStroke();
+fill(0, 191, 255);
+rect(alienX+118*alienHeight, alienY+40*alienHeight, 110*alienHeight, 30*alienHeight); //head
+rect(alienX+55*alienHeight, alienY+70*alienHeight, 235*alienHeight, 30*alienHeight);
+rect(alienX+30*alienHeight, alienY+100*alienHeight, 285*alienHeight, 30*alienHeight);
+rect(alienX+30*alienHeight, alienY+130*alienHeight, 65*alienHeight, 30*alienHeight); //eyes
+rect(alienX+250*alienHeight, alienY+130*alienHeight, 65*alienHeight, 30*alienHeight);
+rect(alienX+146*alienHeight, alienY+130*alienHeight, 50*alienHeight, 30*alienHeight);
+rect(alienX+30*alienHeight, alienY+160*alienHeight, 285*alienHeight, 30*alienHeight);
+rect(alienX+94*alienHeight, alienY+190*alienHeight, 50*alienHeight, 30*alienHeight); //feet
+rect(alienX+194*alienHeight, alienY+190*alienHeight, 50*alienHeight, 30*alienHeight);
+rect(alienX+68*alienHeight, alienY+220*alienHeight, 50*alienHeight, 30*alienHeight);
+rect(alienX+222*alienHeight, alienY+220*alienHeight, 50*alienHeight, 30*alienHeight);
+rect(alienX+144*alienHeight, alienY+220*alienHeight, 50*alienHeight, 30*alienHeight);
+rect(alienX+18*alienHeight, alienY+249*alienHeight, 50*alienHeight, 30*alienHeight);
+rect(alienX+271*alienHeight, alienY+249*alienHeight, 50*alienHeight, 30*alienHeight);
+
+};
+
+var drawRedAlien = function(alienX, alienY, alienSize) {
+    var alienHeight = alienSize/60;
+noStroke();
+fill(255, 0, 0);
+rect(alienX+75 * alienHeight, alienY+50 * alienHeight, 30 * alienHeight, 30 * alienHeight); //antennae
+rect(alienX+258 * alienHeight, alienY+50 * alienHeight, 30 * alienHeight, 30 * alienHeight); 
+rect(alienX+228 * alienHeight, alienY+80 * alienHeight , 30 * alienHeight, 30 * alienHeight);
+rect(alienX+105 * alienHeight, alienY+80 * alienHeight, 30 * alienHeight, 30 * alienHeight);
+rect(alienX+75 * alienHeight, alienY+110 * alienHeight, 214 * alienHeight, 30 * alienHeight); //start head
+rect(alienX+135 * alienHeight, alienY+140 * alienHeight, 94 * alienHeight, 30 * alienHeight);
+rect(alienX+7 * alienHeight, alienY+140 * alienHeight, 97 * alienHeight, 30 * alienHeight);
+rect(alienX+258 * alienHeight, alienY+140 * alienHeight, 97 * alienHeight, 30 * alienHeight);
+rect(alienX+7 * alienHeight, alienY+170 * alienHeight, 348 * alienHeight, 30 * alienHeight);
+rect(alienX+7 * alienHeight, alienY+80 * alienHeight, 30 * alienHeight, 60 * alienHeight); //arm 1
+rect(alienX+325 * alienHeight, alienY+80 * alienHeight, 30 * alienHeight, 60 * alienHeight); //arm 2
+rect(alienX+35 * alienHeight, alienY+200 * alienHeight, 290 * alienHeight, 30 * alienHeight);
+rect(alienX+75 * alienHeight, alienY+230 * alienHeight, 30 * alienHeight, 30 * alienHeight); //foot 1
+rect(alienX+45 * alienHeight, alienY+260 * alienHeight, 30 * alienHeight, 30 * alienHeight); 
+rect(alienX+260 * alienHeight, alienY+230 * alienHeight, 30 * alienHeight, 30 * alienHeight); //foot 2
+rect(alienX+290 * alienHeight, alienY+260 *alienHeight, 30 * alienHeight, 30 * alienHeight); 
+
+};
+
+
+
+//begin invader class
+var Squid = function(x, y) {
+    this.x = x;
+    this.y = y;
+    this.size = 2;
+};
+Squid.prototype.draw = function() {
+    drawSquidAlien(this.x, this.y, this.size, this.size);
+};
+
+var BlueAlien = function(x,y) {
+    this.x = x;
+    this.y = y;
+    this.size = 2;
+};
+BlueAlien.prototype.draw = function() {
+     drawBlueAlien(this.x, this.y, this.size, this.size);
+};
+
+var RedAlien=function(x,y){
+    this.x = x;
+    this.y = y;
+    this.size = 4;
+};
+RedAlien.prototype.draw = function() {
+    drawRedAlien(this.x, this.y, this.size, this.size);
+};
+//end invader class
+
+
+
+
+var SpaceShip = function(x,y){
+    this.x = x;
+    this.y = y;
+};
+SpaceShip.prototype.draw = function() {
+     this.x = constrain (this.x, 20, 370);
+     drawSpaceship(this.x-30, this.y, 5);
+};
+SpaceShip.prototype.right = function(){ //spaceship moves right
+    this.x += 3;
+};
+SpaceShip.prototype.left = function(){ //spaceship moves left
+    this.x -= 3;
+};
+SpaceShip.prototype.shoot = function(){
+        fill(255, 255, 255);
+        line(this.x, this.y, this.x, this.y-10);  
+};
+var spaceship = new SpaceShip(100,350);
+
+var bulletsArray = [];
+
+var Bullets = function (){ //NEW ADDITIONS-MIMICKING BUTTON CLASS
+    this.x = spaceship.x;
+    this.y = spaceship.y;
+    this.dead = false;
+    this.speed = 5;
+};
+Bullets.prototype.draw = function() {
+    fill (255, 255, 255);
+    rect (this.x, this.y, 5, 20);
+};
+Bullets.prototype.update = function() {
+    this.y += -this.speed;
+    if (this.y < -20) {           //Curtesy of 1001Programmer1001
+        this.dead = true;
+    }
+};
+Bullets.prototype.run = function() {    //Curtesy of 1001Programmer1001
+    this.update();
+    this.draw();
+};
+
+var aliens = [];
+
+for (var i = 0; i<NUM_ROWS; i++){  //draws alien grid
+    for (var j = 0; j <1; j++) { //makes one row of squid
+        aliens.push(new Squid(i*37+14,j*31+25));
+    }
+    for (var j=1; j<3; j++){ //makes two rows of red aliens
+        aliens.push(new RedAlien(i*37+14,j*31+25));
+    }
+    for (var j=3; j<5; j++) { //makes two rows of blue aliens
+        aliens.push(new BlueAlien(i*37+14,j*31+25));
+    }
+        aliens.push(new Squid(-50, 25)); //makes squid offscreen so array is never truly empty (helps w/ transitioning to win screen
+    
+}
+
+//Create Tiles:
+
+var fireBullet = function() {    //creating bullets that are put into bulletsArray
+    bulletsArray.push(new Bullets());
+};
+
+
+var runBullets = function() {
+        
+    for (var i = bulletsArray.length-1; i >= 0; i--) {
+        bulletsArray[i].run();
+        for (var j=aliens.length-1; j>=0; j--){ //when bullet hit alien, both bullet and alien disappear
+            if (((aliens[j].x-20<=bulletsArray[i].x) && (aliens[j].x+20>=bulletsArray[i].x)) &&((aliens[j].y-20<=bulletsArray[i].y) && (aliens[j].y+20>=bulletsArray[i].y))){
+              bulletsArray[i].dead=true;
+              score++; //add one point to player score
+              aliens.splice(j,1); //alien removed from aliens array and disappears from screen
+            }
+        }
+        if (bulletsArray[i].dead) {   //if bullet goes off screen or hits take out of array
+            bulletsArray.splice(i, 1); //bullet removed from bulletsArray
+        }
+    }
+
+};
+
+
+
+
+
+var Button = function(config) { 
+    this.x = config.x || 0;
+    this.y = config.y || 0;
+    this.width = config.width || 105;
+    this.height = config.height || 50;
+    this.label = config.label || "Click";
+    this.onClick = config.onClick || function() {};
+    this.TSize = 30;
+};
+
+Button.prototype.draw = function() {
+    fill(237, 224, 45);
+    rect(this.x, this.y, this.width, this.height, 20);
+    fill(247, 33, 0);
+    textSize(this.TSize);
+    textAlign(LEFT, TOP);
+    text(this.label, this.x+23, this.y+this.height/4);
+};
+
+Button.prototype.isMouseInside = function() {
+    return mouseX > this.x &&
+           mouseX < (this.x + this.width) &&
+           mouseY > this.y &&
+           mouseY < (this.y + this.height);
+};
+
+Button.prototype.handleMouseClick = function() {
+    if (this.isMouseInside()) {
+        this.onClick();
+    }
+};
+// end Khan button class
+
+var startButton = new Button({ //creates start button used in intro screen
+    x: 143,
+    y: 270,
+    label: "PLAY",
+    onClick: function() {
+        if (currentScene===0){
+            currentScene=1;}
+    }
+});
+
+var projectiles = [{x: 100, y: 50}];
+
+var playGame = function() { // all game code here
+    background(0, 0, 0);
+    textSize(20);
+    fill(255, 0, 0);
+    text ("Score: "+score, 69,10);
+    text("Lives: "+lives, 252, 10);
+    drawMaddieBitmoji(-20,-30,66); //draws Maddie's bitmoji on screen
+    myBitmoji(322,-15,94); //draws Selena's bitmoji on screen
+    
+    for (var i=0; i<aliens.length; i++){ //draw grid of aliens
+        aliens[i].draw();
+    }
+    for (var i=0; i<aliens.length; i++){ //move grid of aliens down screen
+        aliens[i].y+=speed;
+        if (aliens[i].y>=348){ //if aliens get to bottom of screen
+            currentScene=2;
+        }
+        if (aliens.length <=10){ //if all "on screen" aliens disappear
+            currentScene=3;
+        }
+    }
+    
+    for (var i=0; i<projectiles.length; i++){  // draw all of the example projectiles
+        fill(255, 255, 255);
+        ellipse(projectiles[i].x, projectiles[i].y++, 5, 10);
+    }
+    
+    if(frameCount % (110) === 0){ // Adds a projectile to the screen every 110 frames
+        var randomAlien = aliens [floor(random(0, aliens.length-1))];
+        projectiles.push({x: randomAlien.x, y: randomAlien.y});  // projectile will shoot from random alien coordinate
+    }
+    for (var i = 0; i < projectiles.length; ++i) { //checks for projectile hitting spaceship
+        if (spaceship.x+40 >= projectiles[i].x && spaceship.x-22 <= (projectiles[i].x) &&
+        spaceship.y+20 >= projectiles[i].y && spaceship.y+5 <= projectiles[i].y) {
+        projectiles.splice(i, 1);
+        lives--;
+       }
+       if (projectiles[i].y>420){ //removes the projectiles object from the array if projectiles is greater than 420
+           projectiles.splice(i,1);
+       }
+       if (lives===0){ //player loses once 3 lives have been used
+       currentScene=2;
+       }
+    }
+      
+        
+    runBullets();
+    spaceship.draw();
+};
+   
+var splashScreen = function() {  //The start screen!
+    background(0, 0, 0);
+    fill(240, 234, 56);
+    textSize(40);
+    text("SPACE INVADERS", 70, 30);
+    textSize(15);
+    fill(106, 255, 0);
+    text("HOW TO PLAY: Use the space bar to shoot the aliens", 45, 80); 
+    text("as they fall. You have 3 lives! Use the left and right", 45, 100); 
+    text("arrow keys to control the spaceship. Good luck!", 45, 119);
+    fill(255, 0, 0);
+    text("By: Selena and Maddie", 128, 169);
+    drawSquidAlien(45, 170, 7);
+    drawBlueAlien(269, 172, 7);
+    drawRedAlien(160, 177, 12);
+    drawSpaceship(140, 312, 9);
+    drawMaddieBitmoji(332,322,66); //draws Maddie's bitmoji on screen
+    myBitmoji(-12,336,94); //draws Selena's bitmoji on screen
+    startButton.draw(); //draws start button on screen
+}; //intro screen
+
+var losingScreen= function (){ //losing screen
+    background(0, 0, 0);
+    fill (255, 0, 0);
+    textSize(50);
+    text ("You Lost :(", 101,41);
+    drawSpaceship(115, 197, 13);
+    fill(255, 255, 255);
+    ellipse(196, 244, 12, 27);
+    fill(0, 0, 0);
+    rect(159, 299, 20, 10);
+    rect(225, 299, 10, 10);
+    rect(199, 299, 10, 10);
+    rect(212, 314, 10, 10);
+    rect(143, 299, 10, 10);
+    rect(207, 258, 10, 10);
+    rect(147, 315, 10, 10);
+    rect(189, 277, 10, 10);
+    rect(245, 307, 10, 10);
+    rect(186, 307, 10, 10);
+    
+};
+var winningScreen= function (){ //winning screen
+  background (0, 255, 34);
+  fill (230, 255, 0);
+  textSize(50);
+  text ("You Win!", 110,30);
+  drawRedAlien(257, 100, 13);
+  drawBlueAlien(158, 100, 7);
+  drawSquidAlien(61, 100, 7);
+  image(getImage("cute/ChestOpen"), 206, 289);
+  image(getImage("cute/GemBlue"), 208, 250, 46, 69);
+};
+
+var f = createFont("fantasy");    //font for the game
+textFont(f);
+var keyCheck = function() {
+    if (keys[RIGHT]){ //when right arrow pressed, ship moves right
+        spaceship.right();
+    } 
+    if (keys[LEFT]){ //when left arrow pressed, ship moves left
+        spaceship.left();   
+    }
+};
+keyPressed = function() {    //key fxn curtesy of 1001Programmer1001
+    keys[keyCode] = true;
+    if (keyCode === 32 && currentScene === 1) {
+        fireBullet();
+    }
+};
+keyReleased = function() {
+    keys[keyCode] = false;
+};
+mouseClicked = function() { //handles the clicking of the start button
+   if (currentScene===0){
+   startButton.handleMouseClick();
+   } 
+};
+draw = function() {  //draws all scenes in game
+    if (currentScene === 0) {
+        splashScreen();}
+    if (currentScene === 1) {
+        keyCheck();
+        playGame();}
+    if (currentScene===2){
+        losingScreen();}
+    if (currentScene===3){
+        winningScreen();}
+};
